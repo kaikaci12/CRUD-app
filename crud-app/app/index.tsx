@@ -9,7 +9,7 @@ import {
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { todoLists as initialTodos } from "../data/todos";
 import { useState } from "react";
-
+import AntDesign from "@expo/vector-icons/AntDesign";
 export default function Index() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState(initialTodos);
@@ -57,7 +57,7 @@ export default function Index() {
                   {todo.task}
                 </Text>
                 <TouchableOpacity onPress={() => handleDeleteTodo(todo.id)}>
-                  <Text style={styles.deleteButton}>🗑️</Text> {/* Trash Icon */}
+                  <AntDesign name="delete" size={24} color="red" />
                 </TouchableOpacity>
               </View>
             ))}
@@ -129,9 +129,5 @@ const styles = StyleSheet.create({
     color: "#888",
     textDecorationLine: "line-through",
     flex: 1,
-  },
-  deleteButton: {
-    fontSize: 20,
-    color: "red",
   },
 });

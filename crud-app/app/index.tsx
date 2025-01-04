@@ -5,11 +5,14 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { todoLists as initialTodos } from "../data/todos";
 import { useState } from "react";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Ionicons from "@expo/vector-icons/Ionicons";
+
 export default function Index() {
   const [todo, setTodo] = useState("");
   const [todos, setTodos] = useState(initialTodos);
@@ -23,11 +26,23 @@ export default function Index() {
       };
       setTodos((prev) => [...prev, newTodo]);
       setTodo("");
+      alert("added todo");
     }
   };
 
   const handleDeleteTodo = (id: number) => {
     setTodos((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const handleCompleteTodo = (id: number) => {
+    setTodos((prev) =>
+      prev.map((todo) => {
+        if (todo.id === id) {
+          return { ...todo, completed: true };
+        }
+        return todo;
+      })
+    );
   };
 
   return (
@@ -40,6 +55,7 @@ export default function Index() {
             style={styles.input}
             placeholder="Add a new task"
             placeholderTextColor="#aaa"
+            autoFocus={true}
           />
           <TouchableOpacity
             style={styles.addButton}
@@ -56,9 +72,14 @@ export default function Index() {
                 >
                   {todo.task}
                 </Text>
-                <TouchableOpacity onPress={() => handleDeleteTodo(todo.id)}>
+                {!todo.completed && (
+                  <Pressable onPress={() => handleCompleteTodo(todo.id)}>
+                    <Ionicons name="checkmark" size={24} color="black" />
+                  </Pressable>
+                )}
+                <Pressable onPress={() => handleDeleteTodo(todo.id)}>
                   <AntDesign name="delete" size={24} color="red" />
-                </TouchableOpacity>
+                </Pressable>
               </View>
             ))}
           </ScrollView>

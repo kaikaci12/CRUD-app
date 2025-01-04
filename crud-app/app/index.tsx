@@ -7,31 +7,63 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { todoLists } from "../data/todos";
+import { todoLists as initialTodos } from "../data/todos";
+import { useState } from "react";
 
 export default function Index() {
+  const [todo, setTodo] = useState("");
+  const [todos, setTodos] = useState(initialTodos);
+
+  const handleAddTodoList = () => {
+    if (todo.trim()) {
+      const newTodo = {
+        id: Date.now(),
+        task: todo,
+        completed: false,
+      };
+      setTodos((prev) => [...prev, newTodo]);
+      setTodo("");
+    }
+  };
+
+  const handleDeleteTodo = (id: number) => {
+    setTodos((prev) => prev.filter((item) => item.id !== id));
+  };
+
   return (
-    <SafeAreaProvider style={styles.container}>
-      <View style={styles.inner}>
-        <TextInput
-          style={styles.input}
-          placeholder="Add a new task"
-          placeholderTextColor="#aaa"
-        />
-        <Text style={styles.text}>Your Tasks</Text>
-        <ScrollView style={styles.scrollContainer}>
-          {todoLists.map((todo) => (
-            <View key={todo.id} style={styles.todoItem}>
-              <Text style={todo.completed ? styles.completedTask : styles.task}>
-                {todo.task}
-              </Text>
-              <Text style={styles.status}>
-                {todo.completed ? "Completed" : "Pending"}
-              </Text>
-            </View>
-          ))}
-        </ScrollView>
-      </View>
+    <SafeAreaProvider>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.inner}>
+          <TextInput
+            value={todo}
+            onChangeText={(text) => setTodo(text)}
+            style={styles.input}
+            placeholder="Add a new task"
+            placeholderTextColor="#aaa"
+          />
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddTodoList}
+          >
+            <Text style={styles.addButtonText}>Add Todo</Text>
+          </TouchableOpacity>
+          <Text style={styles.text}>Your Tasks</Text>
+          <ScrollView style={styles.scrollContainer}>
+            {todos.map((todo) => (
+              <View key={todo.id} style={styles.todoItem}>
+                <Text
+                  style={todo.completed ? styles.completedTask : styles.task}
+                >
+                  {todo.task}
+                </Text>
+                <TouchableOpacity onPress={() => handleDeleteTodo(todo.id)}>
+                  <Text style={styles.deleteButton}>🗑️</Text> {/* Trash Icon */}
+                </TouchableOpacity>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </SafeAreaView>
     </SafeAreaProvider>
   );
 }
@@ -57,6 +89,18 @@ const styles = StyleSheet.create({
     color: "white",
     backgroundColor: "#1e1e1e",
   },
+  addButton: {
+    backgroundColor: "#1e90ff",
+    paddingVertical: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    alignItems: "center",
+  },
+  addButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "600",
+  },
   text: {
     fontSize: 20,
     color: "white",
@@ -78,14 +122,16 @@ const styles = StyleSheet.create({
   task: {
     fontSize: 16,
     color: "white",
+    flex: 1,
   },
   completedTask: {
     fontSize: 16,
     color: "#888",
     textDecorationLine: "line-through",
+    flex: 1,
   },
-  status: {
-    fontSize: 14,
-    color: "#aaa",
+  deleteButton: {
+    fontSize: 20,
+    color: "red",
   },
 });

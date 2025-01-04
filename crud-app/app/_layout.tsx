@@ -1,14 +1,11 @@
 import { Stack } from "expo-router";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 export default function RootLayout() {
   return (
-    <SafeAreaView>
+    <SafeAreaProvider>
       <Stack>
-        <Stack.Screen
-          name="index"
-          options={{ headerShown: false, title: "Manage your Todo List" }}
-        />
+        <Stack.Screen name="index" options={{ headerShown: false }} />
       </Stack>
-    </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
